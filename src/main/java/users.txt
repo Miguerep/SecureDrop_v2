@@ -1,0 +1,5 @@
+admin:$2a$12$ARkaKQUnut6vDgx.YjzQLeq74o/G6q.i644Z/6b3gtCxHzOz3uUBe:ADMIN
+juan:1234:USER
+maria:abcd:USER
+auditor:audit:AUDITOR
+
