@@ -2,6 +2,9 @@ import util.IOUtil;
 import protocol.Protocol;
 
 
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +28,6 @@ En la versión segura habrá que usar TLS.
 public class ClientMain {
 
     public static void main(String[] args) {
-
         System.out.println("=== SecureDrop Client v2 ===");
 
         Scanner sc = new Scanner(System.in);
@@ -37,14 +39,12 @@ public class ClientMain {
         System.out.print("Puerto [15000]: ");
         String portStr = sc.nextLine().trim();
         int port = portStr.isEmpty() ? 15000 : Integer.parseInt(portStr);
+        System.setProperty("javax.net.ssl.trustStore", "ssl/client.truststore");
+        System.setProperty("javax.net.ssl.trustStorePassword", "123456789");
 
+        SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         try (
-                // =====================================================
-                // TODO 1:
-                // Cambiar Socket por SSLSocket.
-                // Esto activará comunicación cifrada (TLS).
-                // =====================================================
-                Socket socket = new Socket(host, port);
+                SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
 
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -52,8 +52,9 @@ public class ClientMain {
                 PrintWriter out = new PrintWriter(
                         new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
         ) {
-
+            socket.startHandshake();
             // LOGIN
+            System.out.println("LOGIN ...");
             System.out.print("Usuario: ");
             String user = sc.nextLine().trim();
 

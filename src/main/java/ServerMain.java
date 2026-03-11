@@ -4,7 +4,6 @@ import server.MessageStore;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 /*
@@ -33,7 +32,7 @@ public class ServerMain {
         UserStore userStore = new UserStore("src/main/java/users.txt");
         MessageStore messageStore = new MessageStore("data");
         System.setProperty("javax.net.ssl.keyStore", "ssl/server.keystore");
-        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+        System.setProperty("javax.net.ssl.keyStorePassword", "123456789");
 
         SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         try (SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(PORT)) {
