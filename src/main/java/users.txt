@@ -1,5 +1,5 @@
 admin:$2a$12$ARkaKQUnut6vDgx.YjzQLeq74o/G6q.i644Z/6b3gtCxHzOz3uUBe:ADMIN
-juan:1234:USER
-maria:abcd:USER
-auditor:audit:AUDITOR
+juan:$2a$12$1Anubyv/n.q/tKIEFI39l.sHGxVamGUz8N/zypOOSrycMMD.i2vQe:USER
+maria:$2a$12$IHgRZc1t3Y5Xiy2I6hyedezwjzo2JUNoZh55m3RI7LuUx6KmDc4JG:USER
+auditor::$2a$12$GmYgEJ2MeyGHYUykqulYmuuAKcwn1KdWW8p3w9djZadQ60VoxC746:AUDITOR
 

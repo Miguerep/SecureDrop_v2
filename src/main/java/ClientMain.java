@@ -70,8 +70,6 @@ public class ClientMain {
                 return;
             }
 
-            // MENÚ
-            label:
             while (true) {
 
                 System.out.println("\n--- Menú ---");
@@ -89,11 +87,10 @@ public class ClientMain {
                         System.out.println("Escribe el mensaje:");
                         String msg = sc.nextLine();
 
-                        // =====================================================
-                        // TODO 2:
-                        // Podría añadirse validación de tamaño aquí también
-                        // antes de enviarlo al servidor.
-                        // =====================================================
+                        if (msg.length() > 500){
+                            System.err.println("Error, el mensaje es demasiado grande.");
+                            break;
+                        }
 
                         out.println("SEND " + msg);
                         System.out.println("SERVER> " + in.readLine());
@@ -115,7 +112,7 @@ public class ClientMain {
 
                         out.println("QUIT");
                         System.out.println("SERVER> " + in.readLine());
-                        break label;
+                        break;
 
                     default:
                         System.out.println("Opción no válida.");
@@ -125,14 +122,8 @@ public class ClientMain {
 
         } catch (Exception e) {
 
-            // =====================================================
-            // TODO 3:
-            // En versión segura no mostrar detalles técnicos.
-            // Mostrar solo mensaje genérico.
-            // =====================================================
+            System.err.println("Error cliente: " + e.getMessage());
 
-            System.err.println("Error cliente: " + e);
-            e.printStackTrace();
         }
     }
 }

@@ -1,6 +1,8 @@
 import server.UserStore;
 import server.MessageStore;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,22 +27,16 @@ public class ServerMain {
 
     public static void main(String[] args) {
 
-        System.out.println("=== SecureDrop Server v1 (INSEGURA) ===");
+        System.out.println("=== SecureDrop Server v2 ===");
         System.out.println("Puerto: " + PORT);
 
         UserStore userStore = new UserStore("src/main/java/users.txt");
-
         MessageStore messageStore = new MessageStore("data");
+        System.setProperty("javax.net.ssl.keyStore", "ssl/server.keystore");
+        System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
 
-        try (
-                // =====================================================
-                // TODO 1:
-                // Cambiar ServerSocket por SSLServerSocket.
-                //
-                // Esto activará comunicación cifrada (TLS).
-                // =====================================================
-                ServerSocket serverSocket = new ServerSocket(PORT)
-        ) {
+        SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        try (SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(PORT)) {
 
             while (true) {
 
@@ -61,14 +57,8 @@ public class ServerMain {
                 ).start();
             }
 
+
         } catch (IOException e) {
-
-            // =====================================================
-            // TODO 3:
-            // No mostrar detalles técnicos.
-            // Mostrar solo mensaje genérico y guardar log.
-            // =====================================================
-
             System.err.println("Error en el servidor: " + e);
             e.printStackTrace();
         }

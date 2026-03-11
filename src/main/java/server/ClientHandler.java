@@ -114,8 +114,8 @@ public class ClientHandler implements Runnable {
             // 3) Guardar el error real en un archivo de log.
             // =====================================================
 
-            System.err.println("Error en handler: " + e);
-            e.printStackTrace();
+            System.err.println("Error Interno: " + e.getMessage());
+
 
         } finally {
             try { socket.close(); } catch (IOException ignored) {}
