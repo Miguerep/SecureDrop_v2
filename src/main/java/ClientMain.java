@@ -1,13 +1,11 @@
 import util.IOUtil;
 import protocol.Protocol;
 
-
-import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
-import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 /*
@@ -53,6 +51,9 @@ public class ClientMain {
                         new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)
         ) {
             socket.startHandshake();
+
+            String welcome = in.readLine();
+            System.out.println("SERVER> " + welcome);
             // LOGIN
             System.out.println("LOGIN ...");
             System.out.print("Usuario: ");
@@ -66,8 +67,8 @@ public class ClientMain {
             String resp = in.readLine();
             System.out.println("SERVER> " + resp);
 
-            if (resp == null || !resp.startsWith(Protocol.WLCM)) {
-                System.out.println("Login fallido.");
+            if (resp == null || !resp.startsWith(Protocol.OK)) {
+                System.err.println("Login fallido.");
                 return;
             }
 
@@ -88,7 +89,7 @@ public class ClientMain {
                         System.out.println("Escribe el mensaje:");
                         String msg = sc.nextLine();
 
-                        if (msg.length() > 500){
+                        if (msg.length() > 500) {
                             System.err.println("Error, el mensaje es demasiado grande.");
                             break;
                         }
