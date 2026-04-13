@@ -1,0 +1,4 @@
+admin:admin:ADMIN
+juan:1234:USER
+maria:abcd:USER
+auditor:audit:AUDITOR
