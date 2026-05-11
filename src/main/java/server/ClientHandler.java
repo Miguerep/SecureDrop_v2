@@ -5,6 +5,8 @@ import protocol.Protocol;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +30,16 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private final UserStore userStore;
     private final MessageStore messageStore;
-
+    private final PrivateKey serverPrivateKey;
+    private final PublicKey serverPublicKey;
     private UserStore.User sessionUser = null;
 
-    public ClientHandler(Socket socket, UserStore userStore, MessageStore messageStore) {
+    public ClientHandler(Socket socket, UserStore userStore, MessageStore messageStore, PrivateKey serverPrivateKey, PublicKey serverPublicKey) {
         this.socket = socket;
         this.userStore = userStore;
         this.messageStore = messageStore;
+        this.serverPrivateKey = serverPrivateKey;
+        this.serverPublicKey = serverPublicKey;
     }
 
     @Override
