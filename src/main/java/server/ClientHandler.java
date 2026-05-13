@@ -2,6 +2,8 @@ package server;
 
 import protocol.Protocol;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +35,8 @@ public class ClientHandler implements Runnable {
     private final PrivateKey serverPrivateKey;
     private final PublicKey serverPublicKey;
     private UserStore.User sessionUser = null;
+    private SecretKey sessionAESKey = null;
+
 
     public ClientHandler(Socket socket, UserStore userStore, MessageStore messageStore, PrivateKey serverPrivateKey, PublicKey serverPublicKey) {
         this.socket = socket;
@@ -80,6 +84,24 @@ public class ClientHandler implements Runnable {
 
                     case "LOGIN":
                         handleLogin(rest, out);
+                        break;
+
+                    case Protocol.RECEIVE_AES_KEY:
+                        try {
+                            // El cliente nos manda su clave AES cifrada con nuestra RSA en Base64
+                            byte[] encryptedAESKey = Base64.getDecoder().decode(rest);
+
+
+                            byte[] aesKeyBytes = util.CryptoUtil.decryptRSA(serverPrivateKey, encryptedAESKey);
+
+                            // Guardamos la clave AES para usarla al guardar y leer mensajes en MessageStore
+                            sessionAESKey = new javax.crypto.spec.SecretKeySpec(aesKeyBytes, 0, aesKeyBytes.length, "AES");
+
+                            out.println(Protocol.OK + " Clave de sesión establecida con éxito. Listo para enviar mensajes.");
+                        } catch (Exception e) {
+                            out.println(Protocol.ERR + " Fallo al establecer clave segura.");
+                            System.err.println("Error descifrando clave AES: " + e.getMessage());
+                        }
                         break;
 
                     case "SEND":
@@ -165,6 +187,13 @@ public class ClientHandler implements Runnable {
             sessionUser = u.get();
             out.println(Protocol.OK + " Autenticado como "
                     + sessionUser.username + " (" + sessionUser.role + ")");
+
+            try {
+                String pubKeyBase64 = Base64.getEncoder().encodeToString(serverPublicKey.getEncoded());
+                out.println(Protocol.SEND_RSA_PUB_KEY + " " + pubKeyBase64);
+            } catch (Exception e) {
+                System.err.println("Error al enviar clave pública: " + e.getMessage());
+            }
         } else {
             out.println(Protocol.ERR + " Credenciales incorrectas");
         }
